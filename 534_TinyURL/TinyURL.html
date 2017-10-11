@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TinyURL</title>
+</head>
+
+<body>
+    <p>
+        原地址：
+        <input type="text" value="https://leetcode.com/" id="site">
+        <input type="button" value="生成" onclick="enCode()">
+        <br/> 新地址：
+        <a href="" target=""></a>
+    </p>
+    <script>
+        /**
+         * http://tinyurl.com/4e9iAk
+         * https://leetcode.com/problems/design-tinyurl
+         * [0][1][2][3][4][5]
+         * 第一个位置记录地址的长度，及解析时要查找的Map
+         **/
+        var tinyUrlBase = "http://tinyurl.com/";
+        var characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //62位
+
+        var db_one = new Map(); //地址长度1-20     *3
+        var db_two = new Map(); //地址长度21-40    *3
+        var db_three = new Map(); //地址长度41-62  *3
+        var db_free = new Map(); //特别长
+
+        function enCode() {
+            var site = document.getElementById('site');
+            var site_str = site.value;
+            var site_length = site_str.length;
+            var site_hash = getHash(site_str);
+            var key = characters.substr(parseInt(site_length / 3), 1) + site_hash;
+            if (site_length < 60) {
+                if (!db_one.has(key))
+                    db_one.set(key, site_str);
+            } else if (site_length < 120) {
+                if (!db_two.has(key))
+                    db_two.set(key, site_str);
+            } else if (site_length < 186) {
+                if (!db_three.has(key))
+                    db_three.set(key, site_str);
+            } else {
+                if (!db_free.has(key))
+                    db_free.set(key, site_str);
+            }
+        }
+
+        function deCode() {}
+
+        //别人的
+        var I64BIT_TABLE = characters.split('');
+
+        function getHash(input) {
+            var hash = 5381;
+            var i = input.length - 1;
+            if (typeof input == 'string') {
+                for (; i > -1; i--)
+                    hash += (hash << 5) + input.charCodeAt(i);
+            } else {
+                for (; i > -1; i--)
+                    hash += (hash << 5) + input[i];
+            }
+            var value = hash & 0x7FFFFFFF;
+            var retValue = '';
+            do {
+                retValue += I64BIT_TABLE[value & 0x3F];
+            }
+            while (value >>= 7);
+            return retValue;
+        }
+    </script>
+</body>
+
+</html>
