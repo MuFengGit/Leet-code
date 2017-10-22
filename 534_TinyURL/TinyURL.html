@@ -12,7 +12,7 @@
 <body>
     <p>
         原地址：
-        <input type="text" value="https://www.baidu.com/" id="site" style="width:250px;">
+        <input type="text" value="https://www.baidu.com/s?wd=" id="site" style="width:250px;">
         <input type="button" value="生成" id="generation">
         <br/> 新地址：
         <input type="text" value="" id="newUrl" style="width:250px;">
@@ -42,15 +42,50 @@
             var site = document.getElementById('site');
             var newUrl = document.getElementById('newUrl');
             var key = enCode(site.value);
+            var site_length = site.value.length;
+            var chiefSite = site.value;
+            debugger;
+            if (site_length < 60) {
+                if (!db_one.has(key)) {
+                    db_one.set(key, chiefSite);
+                } else {
+                    if(db_one.has(key)&&db_one.get(key)==site.value){
+                        again(key);
+                    }
+                }
+            } else if (site_length < 120) {
+                if (!db_two.has(key)) {
+                    db_two.set(key, chiefSite);
+                } else {
+                    if(db_two.has(key)&&db_two.get(key)==site.value){
+                        again(key);
+                    }
+                }
+            } else if (site_length < 186) {
+                if (!db_three.has(key)) {
+                    db_three.set(key, chiefSite);
+                } else {
+                    if(db_three.has(key)&&db_three.get(key)==site.value){
+                        again(key);
+                    }
+                }
+            } else {
+                again(key);
+            }
+
+            function again(v) {
+                key = enCode(v);
+                db_free.set(key, chiefSite);
+            }
             newUrl.value = tinyUrlBase + key;
-        }
+        };
         document.getElementById('analysis').onclick = function () {
             var newUrl = document.getElementById('newUrl');
             var go = document.getElementById('go');
             var key = newUrl.value.slice(newUrl.value.lastIndexOf('/') + 1);
             var site = deCode(key);
             go.href = site;
-        }
+        };
 
         document.getElementById('test').onclick = function () {
             var db_1 = 0,
@@ -59,36 +94,72 @@
                 db_4 = 0,
                 time = 0,
                 sum = 0,
-                upper_limit = 100*100;
+                upper_limit = 100 * 100;
             for (var i = 0; i < 10; i++) {
                 var _start = (new Date()).getTime();
                 var _site = '';
                 for (var j = 0; j < upper_limit; j++) {
                     _site = 'https://www.baidu.com/s?wd=';
                     _site = _site + randomString(parseInt(Math.random() * 186));
-                    enCode(_site);
+                    var key = enCode(_site);
+                    var site_length = _site.length;
+                    var chiefSite = _site;
+                    if (site_length < 60) {
+                        if (!db_one.has(key)) {
+                            db_one.set(key, chiefSite);
+                        } else {
+                            if(db_one.has(key)&&db_one.get(key)==_site){
+                                again(key);
+                            }
+                        }
+                    } else if (site_length < 120) {
+                        if (!db_two.has(key)) {
+                            db_two.set(key, chiefSite);
+                        } else {
+                            if(db_two.has(key)&&db_two.get(key)==_site){
+                                again(key);
+                            }
+                        }
+                    } else if (site_length < 186) {
+                        if (!db_three.has(key)) {
+                            db_three.set(key, chiefSite);
+                        } else {
+                            if(db_three.has(key)&&db_three.get(key)==_site){
+                                again(key);
+                            }
+                        }
+                    } else {
+                        again(key);
+                    }
+
+
+                    function again(v) {
+                        key = enCode(v);
+                        db_free.set(key, chiefSite);
+                    }
                 }
                 var _end = (new Date()).getTime();
-                db_1+=db_one.size;
-                db_2+=db_two.size;
-                db_3+=db_three.size;
-                db_4+=db_free.size;
-                time+=_end - _start;
-                sum+=db_one.size + db_two.size + db_three.size + db_free.size;
+                db_1 += db_one.size;
+                db_2 += db_two.size;
+                db_3 += db_three.size;
+                db_4 += db_free.size;
+                time += _end - _start;
+                sum += db_one.size + db_two.size + db_three.size + db_free.size;
 
-                db_one = new Map(); 
-                db_two = new Map(); 
-                db_three = new Map(); 
-                db_free = new Map(); 
+                db_one = new Map();
+                db_two = new Map();
+                db_three = new Map();
+                db_free = new Map();
             }
             console.log('--------------------')
-            console.log("   db_1    :" + db_1/10);
-            console.log("   db_2    :" + db_2/10);
-            console.log("   db_3    :" + db_3/10);
-            console.log("   db_4    :" + db_4/10);
-            console.log("   Time    :" + time/10);
-            console.log("   -->>    :" + ((sum/10)/upper_limit)*100+"%");
-            console.log("   -->>    :" + upper_limit+"-"+parseInt(sum/10)+"-"+(upper_limit-parseInt(sum/10)));
+            console.log("   db_1    :" + db_1 / 10);
+            console.log("   db_2    :" + db_2 / 10);
+            console.log("   db_3    :" + db_3 / 10);
+            console.log("   db_4    :" + db_4 / 10);
+            console.log("   Time    :" + time / 10);
+            console.log("   -->>    :" + ((sum / 10) / upper_limit) * 100 + "%");
+            console.log("   -->>    :" + upper_limit + "-" + parseInt(sum / 10) + "-" + (upper_limit - parseInt(sum /
+                10)));
             console.log('--------------------')
         }
 
@@ -96,31 +167,7 @@
             var site_length = chiefSite.length;
             var site_hash = getHash(chiefSite);
             var key = characters.substr(parseInt(site_length / 3), 1) + site_hash;
-            if (site_length < 60) {
-                if (!db_one.has(key)) {
-                    db_one.set(key, chiefSite);
-                } else {
-                    if (!db_free.has(key))
-                        db_free.set(key, chiefSite);
-                }
-            } else if (site_length < 120) {
-                if (!db_two.has(key)) {
-                    db_two.set(key, chiefSite);
-                } else {
-                    if (!db_free.has(key))
-                        db_free.set(key, chiefSite);
-                }
-            } else if (site_length < 186) {
-                if (!db_three.has(key)) {
-                    db_three.set(key, chiefSite);
-                } else {
-                    if (!db_free.has(key))
-                        db_free.set(key, chiefSite);
-                }
-            } else {
-                if (!db_free.has(key))
-                    db_free.set(key, chiefSite);
-            }
+
             return key;
         }
 
@@ -134,6 +181,9 @@
             } else if (db_gates < 62) {
                 site = db_three.get(shortStreet);
             } else {
+                site = db_free.get(shortStreet);
+            }
+            if (!site) {
                 site = db_free.get(shortStreet);
             }
             return site;
