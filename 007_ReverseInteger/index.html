@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Reverse Integer</title>
+</head>
+<body>
+    <script>
+        function reverse(x) {
+            if(isNaN(x)){
+                return;
+            }
+            var result=0;
+            if(x>0){
+                result=arrange(x);
+            }else{
+                result=0-arrange(0-x);
+            }
+            console.log(x+'-->'+result);
+        };
+        function arrange(y){//123
+            var _num=0;
+            for(var i=0,k=(''+y).length;i<k;i++){
+                _num+=(y%10)*Math.pow(10,k-i-1); //Math.pow(10,i)
+                y=parseInt(y/10);
+            }
+            return _num;
+        }
+        reverse({});
+        reverse(123);
+        reverse(321);
+        reverse(120);
+    </script>
+</body>
+</html>
