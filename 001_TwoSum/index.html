@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TowSum</title>
+</head>
+
+<body>
+    <script>
+        // Given nums = [2, 7, 11, 15], target = 9,
+        // Because nums[0] + nums[1] = 2 + 7 = 9,
+        // return [0, 1].
+
+        var arr=[2, 7, 11, 15];// 总和：35 平均值：8.75
+        var target=18;
+        var result=twoSum(arr,target);
+        console.log("--> "+result);
+        /**
+        * @param {number[]} nums
+        * @param {number} target
+        * @return {number[]}
+        */
+        function twoSum(nums, target){
+            if(!nums||!target){
+                return [];
+            }
+
+            nums.sort(sortNumber);//升序
+
+            //排除大于目标值的项
+            for(var i=nums.length;i>1;i--){
+                if(nums[i]>target){
+                    nums.splice(i,1);
+                }
+            }
+            var sum=0;//数组总和
+            var avg=0;//数组平均值
+            for(var i=0;i<nums.length;i++){
+                sum+=nums[i];
+            }
+            avg=sum/nums.length;
+
+            //由两倍的平均值，决定从哪里开始
+            if(2*avg<target){
+                for(var i=nums.length-1;i>=(Math.floor(nums.length/2));i--){
+                    // for(var k=i-1;k>=(Math.floor(nums.length/2));k--){
+                    for(var k=i-1;k>=0;k--){
+                        if(nums[i]+nums[k]==target){
+                            return [nums[k],nums[i]];
+                        }
+                    }
+                }
+            }else{
+                for(var i=0;i<=(Math.ceil(nums.length/2));i++){
+                    // for(var k=i+1;k<=(Math.ceil(nums.length/2));k++){
+                    for(var k=i+1;k<nums.length;k++){
+                        if(nums[i]+nums[k]==target){
+                            return [nums[i],nums[k]];
+                        }
+                    }
+                }
+            }
+
+            //-->
+
+            function sortNumber(a,b)
+            {
+                return a - b
+            }
+        }
+
+    </script>
+</body>
+
+</html>
