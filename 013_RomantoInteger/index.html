@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Roman to Integer</title>
 </head>
+
 <body>
     <script>
         /*
@@ -18,6 +20,88 @@
         4正常使用时，连续的数字重复不得超过三次
         5在一个数的上面画横线，表示这个数扩大1000倍（本题只考虑3999以内的数，所以用不到这条规则）
         */
+        /**
+         * [RomanInteger description]
+         * @param       {[type]} str [description]
+         * @constructor
+         */
+        function romanInteger(str) {
+            var result=0;
+            if (!str) {
+                return;
+            }
+            /**
+             * 小的数在左边的情况，减
+             */
+            var _tmp='IXC'.indexOf(str.substr(0, 1))
+            if (_tmp!=-1) {
+                if((_tmp==0)||(_tmp==1&&(str.indexOf('L')!=-1||str.indexOf('C')!=-1||str.indexOf('D')!=-1||str.indexOf('M')!=-1))||(_tmp==2&&(str.indexOf('D')!=-1||str.indexOf('M')!=-1))){
+                    var ilast=str.lastIndexOf('I');
+                    var xlast=str.lastIndexOf('X');
+                    var clast=str.lastIndexOf('C');
+                    var dividingLine=Math.max(ilast,xlast,clast);
+                    var _charArr= str.split('');
+                    var less=0;
+                    var plus=0;
+                    for(var i=0;i<=dividingLine;i++){
+                        less+=mapInteger(_charArr[i]);
+                    }
+                    for(dividingLine++;dividingLine<_charArr.length;dividingLine++){
+                        plus+=mapInteger(_charArr[dividingLine]);
+                    }
+                    return plus-less;
+                }else{
+                    var _charArr= str.split('');
+                    for(var i=0;i<_charArr.length;i++){
+                        result+=mapInteger(_charArr[i]);
+                    }
+                }
+
+            } else {
+                /*
+                 * 大的数在右边的情况，加
+                 */
+                var _charArr= str.split('');
+                for(var i=0;i<_charArr.length;i++){
+                    result+=mapInteger(_charArr[i]);
+                }
+            }
+            return result;
+        }
+        /**
+         * 返回字符对应的数字
+         */
+        function mapInteger(str) {
+            switch (str) {
+                case 'I':
+                    return 1;
+                    break;
+                case 'V':
+                    return 5;
+                    break;
+                case 'X':
+                    return 10;
+                    break;
+                case 'L':
+                    return 50;
+                    break;
+                case 'C':
+                    return 100;
+                    break;
+                case 'D':
+                    return 500;
+                    break;
+                case 'M':
+                    return 1000;
+                    break;
+                default:
+            }
+        }
+        console.log(romanInteger('CCLII'));
+        console.log(romanInteger('IIL'));
+        console.log(romanInteger('IXX'));
+
     </script>
 </body>
+
 </html>
